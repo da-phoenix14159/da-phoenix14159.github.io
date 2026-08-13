@@ -7,418 +7,642 @@
 <title>NKS-94 Cipher</title>
 
 <style>
-
 * {
     box-sizing: border-box;
 }
 
 body {
     margin: 0;
+    background: #0d0d0f;
+    color: #f1f1f1;
     font-family: Arial, Helvetica, sans-serif;
-    background: #111;
-    color: #eee;
 }
-
-/* HEADER */
 
 header {
-    height: 60px;
-    background: #181818;
-    border-bottom: 1px solid #333;
-
-    display: flex;
-    align-items: center;
-
-    padding: 0 25px;
+    background: #151518;
+    border-bottom: 1px solid #29292e;
+    padding: 25px 20px;
+    text-align: center;
 }
 
-.logo {
-    font-size: 20px;
-    font-weight: bold;
+header h1 {
+    margin: 0;
+    font-size: 32px;
+    letter-spacing: 2px;
 }
 
-/* MAIN */
+header p {
+    margin: 8px 0 0;
+    color: #999;
+}
 
 main {
-    max-width: 1100px;
-    margin: 35px auto;
-    padding: 0 20px;
+    width: min(1100px, 94%);
+    margin: 30px auto;
 }
 
-/* PIPE */
-
-.pipe {
-    display: grid;
-    grid-template-columns: 1fr 180px 1fr;
-    gap: 15px;
-    align-items: stretch;
+.card {
+    background: #151518;
+    border: 1px solid #29292e;
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 20px;
 }
 
-/* PANELS */
-
-.panel {
-    background: #1b1b1b;
-    border: 1px solid #333;
-    border-radius: 10px;
-
-    min-height: 450px;
-
+.controls {
     display: flex;
-    flex-direction: column;
-}
-
-.panel-header {
-    padding: 15px;
-    border-bottom: 1px solid #333;
-
-    display: flex;
-    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
     align-items: center;
-}
-
-.panel-title {
-    font-weight: bold;
-}
-
-textarea {
-    flex: 1;
-
-    width: 100%;
-    min-height: 350px;
-
-    resize: none;
-
-    border: none;
-    outline: none;
-
-    background: transparent;
-    color: #eee;
-
-    padding: 20px;
-
-    font-family: monospace;
-    font-size: 16px;
-
-    line-height: 1.5;
-}
-
-/* CENTER */
-
-.transform {
-    background: #1b1b1b;
-    border: 1px solid #333;
-    border-radius: 10px;
-
-    padding: 20px;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.transform h2 {
-    margin-top: 0;
 }
 
 select,
 button {
-    width: 100%;
-
-    background: #252525;
-    color: #eee;
-
-    border: 1px solid #444;
-    border-radius: 7px;
-
-    padding: 10px;
-
+    background: #222228;
+    color: white;
+    border: 1px solid #3a3a42;
+    border-radius: 8px;
+    padding: 10px 14px;
     font-size: 14px;
-
     cursor: pointer;
 }
 
-button:hover,
-select:hover {
-    background: #303030;
+select:hover,
+button:hover {
+    background: #2c2c33;
 }
 
-button {
-    margin-top: 10px;
+.cipher-boxes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
 }
 
-.info {
-    margin-top: 15px;
+.box-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
 
-    color: #999;
+.box-title h2 {
+    font-size: 17px;
+    margin: 0;
+}
 
+textarea {
+    width: 100%;
+    min-height: 230px;
+    resize: vertical;
+    background: #0d0d0f;
+    color: #f1f1f1;
+    border: 1px solid #303038;
+    border-radius: 10px;
+    padding: 14px;
+    font-family: Consolas, monospace;
+    font-size: 15px;
+    outline: none;
+}
+
+textarea:focus {
+    border-color: #666670;
+}
+
+.count {
+    color: #777;
     font-size: 12px;
-
-    line-height: 1.5;
+    margin-top: 7px;
 }
 
-/* FOOTER */
+.explanation {
+    line-height: 1.6;
+    color: #c8c8c8;
+}
 
-.footer {
+.alphabet-info {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.selected-character {
+    width: 80px;
+    height: 60px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: #0d0d0f;
+    border: 1px solid #303038;
+    border-radius: 10px;
+
+    font-size: 28px;
+    font-family: Consolas, monospace;
+}
+
+.value-display {
+    color: #aaa;
+}
+
+.section-label {
+    color: #777;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 18px 0 8px;
+}
+
+.alphabet {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fill, minmax(55px, 1fr));
+
+    gap: 6px;
+}
+
+.character {
+    min-height: 55px;
+
+    background: #202025;
+    border: 1px solid #303038;
+    border-radius: 8px;
+
+    color: white;
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    transition: 0.12s;
+}
+
+.character:hover {
+    background: #303038;
+    transform: translateY(-1px);
+}
+
+.character-symbol {
+    font-family: Consolas, monospace;
+    font-size: 17px;
+}
+
+.character-value {
+    color: #777;
+    font-size: 10px;
+    margin-top: 3px;
+}
+
+footer {
     text-align: center;
-
-    margin-top: 25px;
-
-    color: #666;
-
-    font-size: 13px;
+    color: #555;
+    padding: 25px;
+    font-size: 12px;
 }
 
-/* MOBILE */
+@media (max-width: 700px) {
 
-@media (max-width: 800px) {
-
-    .pipe {
+    .cipher-boxes {
         grid-template-columns: 1fr;
     }
 
-    .transform {
-        order: 2;
+    header h1 {
+        font-size: 25px;
     }
 
-}
+    main {
+        width: 96%;
+    }
 
+    textarea {
+        min-height: 180px;
+    }
+}
 </style>
 </head>
 
 <body>
 
 <header>
-
-    <div class="logo">
-        NKS-94
-    </div>
-
+    <h1>NKS-94</h1>
+    <p>NKS-94 Cipher Encoder & Decoder</p>
 </header>
-
 
 <main>
 
-<div class="pipe">
+    <!-- MODE -->
+    <div class="card">
 
-    <!-- INPUT -->
+        <div class="controls">
 
-    <div class="panel">
+            <label for="mode">Mode:</label>
 
-        <div class="panel-header">
+            <select id="mode">
+                <option value="encode">Encode</option>
+                <option value="decode">Decode</option>
+            </select>
 
-            <div class="panel-title">
-                Input
-            </div>
-
-            <button
-                style="width:auto;margin:0;"
-                onclick="clearInput()">
+            <button id="clearButton">
                 Clear
             </button>
 
         </div>
 
-        <textarea
-            id="input"
-            placeholder="Enter text here..."
-            oninput="process()"></textarea>
-
     </div>
 
 
-    <!-- TRANSFORM -->
+    <!-- INPUT / OUTPUT -->
+    <div class="card">
 
-    <div class="transform">
+        <div class="cipher-boxes">
 
-        <h2>NKS-94</h2>
+            <!-- INPUT -->
 
-        <select
-            id="mode"
-            onchange="process()">
+            <div>
 
-            <option value="encode">
-                Encode
-            </option>
+                <div class="box-title">
 
-            <option value="decode">
-                Decode
-            </option>
+                    <h2>Input</h2>
 
-        </select>
+                    <button id="copyInput">
+                        Copy
+                    </button>
 
+                </div>
 
-        <button onclick="copyOutput()">
-            Copy output
-        </button>
+                <textarea
+                    id="input"
+                    placeholder="Enter text here..."
+                    spellcheck="false"
+                ></textarea>
 
+                <div class="count">
+                    Characters:
+                    <span id="inputCount">0</span>
+                </div>
 
-        <button onclick="swapText()">
-            Swap input/output
-        </button>
-
-
-        <div class="info">
-
-            NKS-94 uses a 94-character
-            alphabet.
-
-            <br><br>
-
-            Encoding adds the value of
-            each character to the value
-            of the next character.
-
-            <br><br>
-
-            The final character remains
-            unchanged.
-
-            <br><br>
-
-            Values wrap around at 94.
-
-        </div>
-
-    </div>
+            </div>
 
 
-    <!-- OUTPUT -->
+            <!-- OUTPUT -->
 
-    <div class="panel">
+            <div>
 
-        <div class="panel-header">
+                <div class="box-title">
 
-            <div class="panel-title">
-                Output
+                    <h2>Output</h2>
+
+                    <button id="copyOutput">
+                        Copy
+                    </button>
+
+                </div>
+
+                <textarea
+                    id="output"
+                    placeholder="NKS-94 output..."
+                    readonly
+                    spellcheck="false"
+                ></textarea>
+
+                <div class="count">
+                    Characters:
+                    <span id="outputCount">0</span>
+                </div>
+
             </div>
 
         </div>
 
-        <textarea
-            id="output"
-            readonly
-            placeholder="Result will appear here..."></textarea>
+    </div>
+
+
+    <!-- EXPLANATION -->
+
+    <div class="card">
+
+        <h2>How NKS-94 Works</h2>
+
+        <div class="explanation">
+
+            <p>
+                NKS-94 assigns every supported character a value
+                from <strong>1 to 94</strong>.
+            </p>
+
+            <p>
+                The alphabet is ordered as lowercase letters,
+                uppercase letters, numbers, symbols on the number
+                keys, and then the remaining keyboard symbols.
+            </p>
+
+            <p>
+                When encoding, the value of the next plaintext
+                character is added to the current character's value.
+                If the result goes above 94, it wraps around to 1.
+            </p>
+
+            <p>
+                The final character is unchanged because there is
+                no character after it.
+            </p>
+
+            <p>
+                Decoding works backwards from the final character,
+                subtracting the value of the next plaintext character.
+            </p>
+
+        </div>
 
     </div>
 
-</div>
 
+    <!-- ALPHABET -->
 
-<div class="footer">
+    <div class="card">
 
-    NKS-94 Cipher
+        <h2>NKS-94 Character / Value Table</h2>
 
-</div>
+        <div class="alphabet-info">
+
+            <div
+                class="selected-character"
+                id="selectedCharacter"
+            >
+                ?
+            </div>
+
+            <div class="value-display">
+
+                Character:
+                <strong id="selectedCharText">
+                    None
+                </strong>
+
+                <br>
+
+                NKS-94 Value:
+                <strong id="selectedValue">
+                    —
+                </strong>
+
+            </div>
+
+        </div>
+
+        <div
+            class="alphabet"
+            id="alphabet"
+        ></div>
+
+    </div>
 
 </main>
+
+
+<footer>
+    NKS-94 Cipher
+</footer>
 
 
 <script>
 
 /*
-==================================================
-NKS-94 CHARACTER TABLE
-==================================================
+==========================================================
+                    NKS-94 ALPHABET
+==========================================================
 
-1-26   lowercase
-27-52  uppercase
-53-62  numbers
-63-72  number symbols
-73-94  other keyboard symbols
+VALUES 1–94
 
-Symbols are paired by physical keyboard key.
+1–26    lowercase
+27–52   uppercase
+53–62   numbers
+63–72   number-row shifted symbols
+73–83   remaining unshifted symbols
+84–94   remaining shifted symbols
+==========================================================
 */
 
-
-const characters =
+const alphabet =
     "abcdefghijklmnopqrstuvwxyz" +
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-    "1234567890" +
+    "0123456789" +
     "!@#$%^&*()" +
-    "`~[{}]\\|;:'\",<.>/?-_=";
+    "`-=[]\\;',./" +
+    "~_+{}|:\"<>?";
 
 
 /*
-==================================================
-LOOKUP TABLES
-==================================================
-*/
-
-const valueOf = {};
-const characterOf = {};
-
-
-for (let i = 0; i < characters.length; i++) {
-
-    const value = i + 1;
-
-    const character = characters[i];
-
-    valueOf[character] = value;
-
-    characterOf[value] = character;
-
-}
-
-
-/*
-==================================================
-CHECK ALPHABET
-==================================================
+==========================================================
+                VERIFY ALPHABET
+==========================================================
 */
 
 console.log(
-    "NKS-94 characters:",
-    characters.length
+    "NKS-94 alphabet length:",
+    alphabet.length
 );
 
 
 /*
-==================================================
-WRAP FUNCTION
-==================================================
+==========================================================
+                CHARACTER LOOKUP TABLES
+==========================================================
+*/
+
+const charToValue = new Map();
+const valueToChar = new Map();
+
+for (let i = 0; i < alphabet.length; i++) {
+
+    const character = alphabet[i];
+
+    /*
+        NKS-94 values are 1–94,
+        NOT 0–93.
+    */
+
+    const value = i + 1;
+
+    charToValue.set(character, value);
+    valueToChar.set(value, character);
+}
+
+
+/*
+==========================================================
+                    ELEMENTS
+==========================================================
+*/
+
+const input =
+    document.getElementById("input");
+
+const output =
+    document.getElementById("output");
+
+const mode =
+    document.getElementById("mode");
+
+const inputCount =
+    document.getElementById("inputCount");
+
+const outputCount =
+    document.getElementById("outputCount");
+
+const clearButton =
+    document.getElementById("clearButton");
+
+const copyInput =
+    document.getElementById("copyInput");
+
+const copyOutput =
+    document.getElementById("copyOutput");
+
+const alphabetContainer =
+    document.getElementById("alphabet");
+
+const selectedCharacter =
+    document.getElementById("selectedCharacter");
+
+const selectedCharText =
+    document.getElementById("selectedCharText");
+
+const selectedValue =
+    document.getElementById("selectedValue");
+
+
+/*
+==========================================================
+                BUILD ALPHABET TABLE
+==========================================================
+*/
+
+for (let i = 0; i < alphabet.length; i++) {
+
+    const character = alphabet[i];
+
+    const value = i + 1;
+
+    const element =
+        document.createElement("div");
+
+    element.className = "character";
+
+
+    const symbol =
+        document.createElement("div");
+
+    symbol.className =
+        "character-symbol";
+
+
+    /*
+        Display a visual representation
+        for characters that are easy to miss.
+    */
+
+    if (character === " ") {
+        symbol.textContent = "␠";
+    } else {
+        symbol.textContent = character;
+    }
+
+
+    const valueElement =
+        document.createElement("div");
+
+    valueElement.className =
+        "character-value";
+
+    valueElement.textContent =
+        value;
+
+
+    element.appendChild(symbol);
+    element.appendChild(valueElement);
+
+
+    /*
+        Click a character to display
+        its NKS-94 value.
+    */
+
+    element.addEventListener(
+        "click",
+        () => {
+
+            selectedCharacter.textContent =
+                character;
+
+            selectedCharText.textContent =
+                character;
+
+            selectedValue.textContent =
+                value;
+
+        }
+    );
+
+
+    alphabetContainer.appendChild(element);
+}
+
+
+/*
+==========================================================
+                    WRAP 1–94
+==========================================================
+
+This converts any integer into an NKS-94 value
+between 1 and 94.
+
+Examples:
+
+95  → 1
+96  → 2
+188 → 94
+189 → 1
+
+==========================================================
 */
 
 function wrap(value) {
 
-    return ((value - 1) % 94 + 94) % 94 + 1;
+    return (
+        ((value - 1) % 94 + 94) % 94
+    ) + 1;
 
 }
 
 
 /*
-==================================================
-ENCODE
-==================================================
-
-C[i] = P[i] + P[i+1]
-
-The final character stays unchanged.
+==========================================================
+                    ENCODE
+==========================================================
 */
 
 function encode(text) {
 
-    if (text.length === 0)
+    if (text.length === 0) {
         return "";
-
+    }
 
     let result = "";
 
 
     for (let i = 0; i < text.length; i++) {
 
-        const current = text[i];
-
-
-        if (!(current in valueOf)) {
-
-            return "ERROR: Unsupported character: " + current;
-
-        }
+        const current =
+            text[i];
 
 
         /*
-        Last character
+            The final character is unchanged.
         */
 
         if (i === text.length - 1) {
@@ -426,241 +650,299 @@ function encode(text) {
             result += current;
 
             continue;
-
         }
 
 
-        const currentValue =
-            valueOf[current];
+        const next =
+            text[i + 1];
 
+
+        const currentValue =
+            charToValue.get(current);
 
         const nextValue =
-            valueOf[text[i + 1]];
+            charToValue.get(next);
 
+
+        /*
+            Unsupported characters are preserved.
+        */
+
+        if (
+            currentValue === undefined ||
+            nextValue === undefined
+        ) {
+
+            result += current;
+
+            continue;
+        }
+
+
+        /*
+            NKS-94 uses 1–94.
+
+            Example:
+
+            current = 90
+            next    = 10
+
+            90 + 10 = 100
+
+            100 wraps to 6.
+        */
 
         const newValue =
-            wrap(
-                currentValue +
-                nextValue
-            );
+            wrap(currentValue + nextValue);
 
 
         result +=
-            characterOf[newValue];
+            valueToChar.get(newValue);
 
     }
 
 
     return result;
-
 }
 
 
 /*
-==================================================
-DECODE
-==================================================
-
-P[i] = C[i] - P[i+1]
-
-Therefore we decode
-from right to left.
+==========================================================
+                    DECODE
+==========================================================
 */
 
 function decode(text) {
 
-    if (text.length === 0)
+    if (text.length === 0) {
         return "";
-
-
-    const cipherValues = [];
-
-
-    /*
-    Convert characters
-    into NKS values.
-    */
-
-    for (const character of text) {
-
-        if (!(character in valueOf)) {
-
-            return "ERROR: Unsupported character: " + character;
-
-        }
-
-
-        cipherValues.push(
-            valueOf[character]
-        );
-
     }
 
 
-    const plaintextValues =
-        new Array(
-            cipherValues.length
-        );
+    const result =
+        new Array(text.length);
 
 
     /*
-    Last character
-    remains unchanged.
+        The final character was unchanged
+        during encoding.
     */
 
-    plaintextValues[
-        plaintextValues.length - 1
-    ] =
-        cipherValues[
-            cipherValues.length - 1
-        ];
+    result[text.length - 1] =
+        text[text.length - 1];
 
 
     /*
-    Work backwards.
+        Work backwards.
     */
 
     for (
-        let i = cipherValues.length - 2;
+        let i = text.length - 2;
         i >= 0;
         i--
     ) {
 
-        plaintextValues[i] =
+        const cipherChar =
+            text[i];
+
+        const nextPlainChar =
+            result[i + 1];
+
+
+        const cipherValue =
+            charToValue.get(cipherChar);
+
+        const nextValue =
+            charToValue.get(nextPlainChar);
+
+
+        /*
+            Unsupported characters
+            remain unchanged.
+        */
+
+        if (
+            cipherValue === undefined ||
+            nextValue === undefined
+        ) {
+
+            result[i] =
+                cipherChar;
+
+            continue;
+        }
+
+
+        /*
+            Reverse the encoding:
+
+            plaintext =
+                cipher - next plaintext
+
+            Example:
+
+            cipher = 6
+            next   = 10
+
+            6 - 10 = -4
+
+            Wrap around:
+
+            -4 → 90
+        */
+
+        const plainValue =
             wrap(
-                cipherValues[i] -
-                plaintextValues[i + 1]
+                cipherValue - nextValue
             );
 
-    }
 
-
-    /*
-    Convert values
-    back to characters.
-    */
-
-    let result = "";
-
-
-    for (const value of plaintextValues) {
-
-        result +=
-            characterOf[value];
+        result[i] =
+            valueToChar.get(plainValue);
 
     }
 
 
-    return result;
-
+    return result.join("");
 }
 
 
 /*
-==================================================
-PROCESS
-==================================================
+==========================================================
+                    UPDATE
+==========================================================
 */
 
-function process() {
+function update() {
 
-    const input =
-        document.getElementById("input").value;
-
-
-    const mode =
-        document.getElementById("mode").value;
-
-
-    let result;
-
-
-    if (mode === "encode") {
-
-        result =
-            encode(input);
-
-    } else {
-
-        result =
-            decode(input);
-
-    }
-
-
-    document.getElementById(
-        "output"
-    ).value = result;
-
-}
-
-
-/*
-==================================================
-CLEAR
-==================================================
-*/
-
-function clearInput() {
-
-    document.getElementById(
-        "input"
-    ).value = "";
-
-    document.getElementById(
-        "output"
-    ).value = "";
-
-}
-
-
-/*
-==================================================
-COPY
-==================================================
-*/
-
-function copyOutput() {
-
-    const output =
-        document.getElementById("output");
-
-
-    navigator.clipboard.writeText(
-        output.value
-    );
-
-}
-
-
-/*
-==================================================
-SWAP
-==================================================
-*/
-
-function swapText() {
-
-    const input =
-        document.getElementById("input");
-
-
-    const output =
-        document.getElementById("output");
-
-
-    const temp =
+    const text =
         input.value;
 
 
-    input.value =
-        output.value;
+    inputCount.textContent =
+        text.length;
 
 
-    output.value =
-        temp;
+    if (mode.value === "encode") {
 
+        output.value =
+            encode(text);
+
+    } else {
+
+        output.value =
+            decode(text);
+
+    }
+
+
+    outputCount.textContent =
+        output.value.length;
 }
+
+
+/*
+==========================================================
+                    INPUT EVENTS
+==========================================================
+*/
+
+input.addEventListener(
+    "input",
+    update
+);
+
+mode.addEventListener(
+    "change",
+    update
+);
+
+
+/*
+==========================================================
+                    CLEAR
+==========================================================
+*/
+
+clearButton.addEventListener(
+    "click",
+    () => {
+
+        input.value = "";
+        output.value = "";
+
+        inputCount.textContent = "0";
+        outputCount.textContent = "0";
+
+        input.focus();
+
+    }
+);
+
+
+/*
+==========================================================
+                    COPY INPUT
+==========================================================
+*/
+
+copyInput.addEventListener(
+    "click",
+    async () => {
+
+        await navigator.clipboard
+            .writeText(input.value);
+
+        copyInput.textContent =
+            "Copied!";
+
+        setTimeout(
+            () => {
+                copyInput.textContent =
+                    "Copy";
+            },
+            1000
+        );
+
+    }
+);
+
+
+/*
+==========================================================
+                    COPY OUTPUT
+==========================================================
+*/
+
+copyOutput.addEventListener(
+    "click",
+    async () => {
+
+        await navigator.clipboard
+            .writeText(output.value);
+
+        copyOutput.textContent =
+            "Copied!";
+
+        setTimeout(
+            () => {
+                copyOutput.textContent =
+                    "Copy";
+            },
+            1000
+        );
+
+    }
+);
+
+
+/*
+==========================================================
+                    INITIALISE
+==========================================================
+*/
+
+update();
 
 </script>
 
