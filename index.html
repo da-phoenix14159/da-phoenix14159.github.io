@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>NKS-94 Cipher</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #111;
+    color: #eee;
+}
+
+/* HEADER */
+
+header {
+    height: 60px;
+    background: #181818;
+    border-bottom: 1px solid #333;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 25px;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* MAIN */
+
+main {
+    max-width: 1100px;
+    margin: 35px auto;
+    padding: 0 20px;
+}
+
+/* PIPE */
+
+.pipe {
+    display: grid;
+    grid-template-columns: 1fr 180px 1fr;
+    gap: 15px;
+    align-items: stretch;
+}
+
+/* PANELS */
+
+.panel {
+    background: #1b1b1b;
+    border: 1px solid #333;
+    border-radius: 10px;
+
+    min-height: 450px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-header {
+    padding: 15px;
+    border-bottom: 1px solid #333;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.panel-title {
+    font-weight: bold;
+}
+
+textarea {
+    flex: 1;
+
+    width: 100%;
+    min-height: 350px;
+
+    resize: none;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+    color: #eee;
+
+    padding: 20px;
+
+    font-family: monospace;
+    font-size: 16px;
+
+    line-height: 1.5;
+}
+
+/* CENTER */
+
+.transform {
+    background: #1b1b1b;
+    border: 1px solid #333;
+    border-radius: 10px;
+
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.transform h2 {
+    margin-top: 0;
+}
+
+select,
+button {
+    width: 100%;
+
+    background: #252525;
+    color: #eee;
+
+    border: 1px solid #444;
+    border-radius: 7px;
+
+    padding: 10px;
+
+    font-size: 14px;
+
+    cursor: pointer;
+}
+
+button:hover,
+select:hover {
+    background: #303030;
+}
+
+button {
+    margin-top: 10px;
+}
+
+.info {
+    margin-top: 15px;
+
+    color: #999;
+
+    font-size: 12px;
+
+    line-height: 1.5;
+}
+
+/* FOOTER */
+
+.footer {
+    text-align: center;
+
+    margin-top: 25px;
+
+    color: #666;
+
+    font-size: 13px;
+}
+
+/* MOBILE */
+
+@media (max-width: 800px) {
+
+    .pipe {
+        grid-template-columns: 1fr;
+    }
+
+    .transform {
+        order: 2;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+        NKS-94
+    </div>
+
+</header>
+
+
+<main>
+
+<div class="pipe">
+
+    <!-- INPUT -->
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <div class="panel-title">
+                Input
+            </div>
+
+            <button
+                style="width:auto;margin:0;"
+                onclick="clearInput()">
+                Clear
+            </button>
+
+        </div>
+
+        <textarea
+            id="input"
+            placeholder="Enter text here..."
+            oninput="process()"></textarea>
+
+    </div>
+
+
+    <!-- TRANSFORM -->
+
+    <div class="transform">
+
+        <h2>NKS-94</h2>
+
+        <select
+            id="mode"
+            onchange="process()">
+
+            <option value="encode">
+                Encode
+            </option>
+
+            <option value="decode">
+                Decode
+            </option>
+
+        </select>
+
+
+        <button onclick="copyOutput()">
+            Copy output
+        </button>
+
+
+        <button onclick="swapText()">
+            Swap input/output
+        </button>
+
+
+        <div class="info">
+
+            NKS-94 uses a 94-character
+            alphabet.
+
+            <br><br>
+
+            Encoding adds the value of
+            each character to the value
+            of the next character.
+
+            <br><br>
+
+            The final character remains
+            unchanged.
+
+            <br><br>
+
+            Values wrap around at 94.
+
+        </div>
+
+    </div>
+
+
+    <!-- OUTPUT -->
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <div class="panel-title">
+                Output
+            </div>
+
+        </div>
+
+        <textarea
+            id="output"
+            readonly
+            placeholder="Result will appear here..."></textarea>
+
+    </div>
+
+</div>
+
+
+<div class="footer">
+
+    NKS-94 Cipher
+
+</div>
+
+</main>
+
+
+<script>
+
+/*
+==================================================
+NKS-94 CHARACTER TABLE
+==================================================
+
+1-26   lowercase
+27-52  uppercase
+53-62  numbers
+63-72  number symbols
+73-94  other keyboard symbols
+
+Symbols are paired by physical keyboard key.
+*/
+
+
+const characters =
+    "abcdefghijklmnopqrstuvwxyz" +
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+    "1234567890" +
+    "!@#$%^&*()" +
+    "`~[{}]\\|;:'\",<.>/?-_=";
+
+
+/*
+==================================================
+LOOKUP TABLES
+==================================================
+*/
+
+const valueOf = {};
+const characterOf = {};
+
+
+for (let i = 0; i < characters.length; i++) {
+
+    const value = i + 1;
+
+    const character = characters[i];
+
+    valueOf[character] = value;
+
+    characterOf[value] = character;
+
+}
+
+
+/*
+==================================================
+CHECK ALPHABET
+==================================================
+*/
+
+console.log(
+    "NKS-94 characters:",
+    characters.length
+);
+
+
+/*
+==================================================
+WRAP FUNCTION
+==================================================
+*/
+
+function wrap(value) {
+
+    return ((value - 1) % 94 + 94) % 94 + 1;
+
+}
+
+
+/*
+==================================================
+ENCODE
+==================================================
+
+C[i] = P[i] + P[i+1]
+
+The final character stays unchanged.
+*/
+
+function encode(text) {
+
+    if (text.length === 0)
+        return "";
+
+
+    let result = "";
+
+
+    for (let i = 0; i < text.length; i++) {
+
+        const current = text[i];
+
+
+        if (!(current in valueOf)) {
+
+            return "ERROR: Unsupported character: " + current;
+
+        }
+
+
+        /*
+        Last character
+        */
+
+        if (i === text.length - 1) {
+
+            result += current;
+
+            continue;
+
+        }
+
+
+        const currentValue =
+            valueOf[current];
+
+
+        const nextValue =
+            valueOf[text[i + 1]];
+
+
+        const newValue =
+            wrap(
+                currentValue +
+                nextValue
+            );
+
+
+        result +=
+            characterOf[newValue];
+
+    }
+
+
+    return result;
+
+}
+
+
+/*
+==================================================
+DECODE
+==================================================
+
+P[i] = C[i] - P[i+1]
+
+Therefore we decode
+from right to left.
+*/
+
+function decode(text) {
+
+    if (text.length === 0)
+        return "";
+
+
+    const cipherValues = [];
+
+
+    /*
+    Convert characters
+    into NKS values.
+    */
+
+    for (const character of text) {
+
+        if (!(character in valueOf)) {
+
+            return "ERROR: Unsupported character: " + character;
+
+        }
+
+
+        cipherValues.push(
+            valueOf[character]
+        );
+
+    }
+
+
+    const plaintextValues =
+        new Array(
+            cipherValues.length
+        );
+
+
+    /*
+    Last character
+    remains unchanged.
+    */
+
+    plaintextValues[
+        plaintextValues.length - 1
+    ] =
+        cipherValues[
+            cipherValues.length - 1
+        ];
+
+
+    /*
+    Work backwards.
+    */
+
+    for (
+        let i = cipherValues.length - 2;
+        i >= 0;
+        i--
+    ) {
+
+        plaintextValues[i] =
+            wrap(
+                cipherValues[i] -
+                plaintextValues[i + 1]
+            );
+
+    }
+
+
+    /*
+    Convert values
+    back to characters.
+    */
+
+    let result = "";
+
+
+    for (const value of plaintextValues) {
+
+        result +=
+            characterOf[value];
+
+    }
+
+
+    return result;
+
+}
+
+
+/*
+==================================================
+PROCESS
+==================================================
+*/
+
+function process() {
+
+    const input =
+        document.getElementById("input").value;
+
+
+    const mode =
+        document.getElementById("mode").value;
+
+
+    let result;
+
+
+    if (mode === "encode") {
+
+        result =
+            encode(input);
+
+    } else {
+
+        result =
+            decode(input);
+
+    }
+
+
+    document.getElementById(
+        "output"
+    ).value = result;
+
+}
+
+
+/*
+==================================================
+CLEAR
+==================================================
+*/
+
+function clearInput() {
+
+    document.getElementById(
+        "input"
+    ).value = "";
+
+    document.getElementById(
+        "output"
+    ).value = "";
+
+}
+
+
+/*
+==================================================
+COPY
+==================================================
+*/
+
+function copyOutput() {
+
+    const output =
+        document.getElementById("output");
+
+
+    navigator.clipboard.writeText(
+        output.value
+    );
+
+}
+
+
+/*
+==================================================
+SWAP
+==================================================
+*/
+
+function swapText() {
+
+    const input =
+        document.getElementById("input");
+
+
+    const output =
+        document.getElementById("output");
+
+
+    const temp =
+        input.value;
+
+
+    input.value =
+        output.value;
+
+
+    output.value =
+        temp;
+
+}
+
+</script>
+
+</body>
+</html>
