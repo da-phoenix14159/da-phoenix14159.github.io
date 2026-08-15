@@ -7,6 +7,7 @@
 <title>NKS-94 Cipher</title>
 
 <style>
+
 * {
     box-sizing: border-box;
 }
@@ -17,6 +18,9 @@ body {
     color: #f1f1f1;
     font-family: Arial, Helvetica, sans-serif;
 }
+
+
+/* ================= HEADER ================= */
 
 header {
     background: #151518;
@@ -36,10 +40,16 @@ header p {
     color: #999;
 }
 
+
+/* ================= MAIN ================= */
+
 main {
     width: min(1100px, 94%);
     margin: 30px auto;
 }
+
+
+/* ================= CARDS ================= */
 
 .card {
     background: #151518;
@@ -48,6 +58,9 @@ main {
     padding: 20px;
     margin-bottom: 20px;
 }
+
+
+/* ================= CONTROLS ================= */
 
 .controls {
     display: flex;
@@ -72,6 +85,14 @@ button:hover {
     background: #2c2c33;
 }
 
+button.active {
+    background: #44444d;
+    border-color: #777783;
+}
+
+
+/* ================= INPUT / OUTPUT ================= */
+
 .cipher-boxes {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -94,13 +115,18 @@ textarea {
     width: 100%;
     min-height: 230px;
     resize: vertical;
+
     background: #0d0d0f;
     color: #f1f1f1;
+
     border: 1px solid #303038;
     border-radius: 10px;
+
     padding: 14px;
+
     font-family: Consolas, monospace;
     font-size: 15px;
+
     outline: none;
 }
 
@@ -114,10 +140,32 @@ textarea:focus {
     margin-top: 7px;
 }
 
+
+/* ================= EXPLANATION ================= */
+
 .explanation {
     line-height: 1.6;
     color: #c8c8c8;
 }
+
+
+/* ================= ALPHABET CONTROLS ================= */
+
+.alphabet-controls {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.alphabet-status {
+    color: #888;
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+
+
+/* ================= SELECTED CHARACTER ================= */
 
 .alphabet-info {
     display: flex;
@@ -147,13 +195,8 @@ textarea:focus {
     color: #aaa;
 }
 
-.section-label {
-    color: #777;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin: 18px 0 8px;
-}
+
+/* ================= ALPHABET ================= */
 
 .alphabet {
     display: grid;
@@ -197,12 +240,33 @@ textarea:focus {
     margin-top: 3px;
 }
 
+.character.disabled {
+    opacity: 0.25;
+    background: #111113;
+    border-color: #202024;
+}
+
+.character.disabled:hover {
+    transform: none;
+    background: #111113;
+}
+
+.character.active-character {
+    border-color: #55555f;
+}
+
+
+/* ================= FOOTER ================= */
+
 footer {
     text-align: center;
     color: #555;
     padding: 25px;
     font-size: 12px;
 }
+
+
+/* ================= MOBILE ================= */
 
 @media (max-width: 700px) {
 
@@ -221,263 +285,369 @@ footer {
     textarea {
         min-height: 180px;
     }
+
 }
+
 </style>
 </head>
 
+
 <body>
 
+
 <header>
+
     <h1>NKS-94</h1>
-    <p>NKS-94 Cipher Encoder & Decoder</p>
+
+    <p>
+        NKS-94 Cipher Encoder & Decoder
+    </p>
+
 </header>
+
 
 <main>
 
-    <!-- MODE -->
-    <div class="card">
 
-        <div class="controls">
+<!-- =====================================================
+                    MODE
+===================================================== -->
 
-            <label for="mode">Mode:</label>
+<div class="card">
 
-            <select id="mode">
-                <option value="encode">Encode</option>
-                <option value="decode">Decode</option>
-            </select>
+    <div class="controls">
 
-            <button id="clearButton">
-                Clear
-            </button>
+        <label for="mode">
+            Mode:
+        </label>
+
+        <select id="mode">
+
+            <option value="encode">
+                Encode
+            </option>
+
+            <option value="decode">
+                Decode
+            </option>
+
+        </select>
+
+
+        <button id="clearButton">
+            Clear
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+                INPUT / OUTPUT
+===================================================== -->
+
+<div class="card">
+
+    <div class="cipher-boxes">
+
+
+        <!-- INPUT -->
+
+        <div>
+
+            <div class="box-title">
+
+                <h2>
+                    Input
+                </h2>
+
+                <button id="copyInput">
+                    Copy
+                </button>
+
+            </div>
+
+
+            <textarea
+                id="input"
+                placeholder="Enter text here..."
+                spellcheck="false"
+            ></textarea>
+
+
+            <div class="count">
+
+                Characters:
+                <span id="inputCount">
+                    0
+                </span>
+
+            </div>
 
         </div>
+
+
+
+        <!-- OUTPUT -->
+
+        <div>
+
+            <div class="box-title">
+
+                <h2>
+                    Output
+                </h2>
+
+                <button id="copyOutput">
+                    Copy
+                </button>
+
+            </div>
+
+
+            <textarea
+                id="output"
+                placeholder="NKS-94 output..."
+                readonly
+                spellcheck="false"
+            ></textarea>
+
+
+            <div class="count">
+
+                Characters:
+                <span id="outputCount">
+                    0
+                </span>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+                    EXPLANATION
+===================================================== -->
+
+<div class="card">
+
+    <h2>
+        How NKS-94 Works
+    </h2>
+
+
+    <div class="explanation">
+
+        <p>
+            NKS-94 assigns every supported character
+            a value from <strong>1 to 94</strong>.
+        </p>
+
+
+        <p>
+            The alphabet is arranged in the following order:
+            lowercase letters, uppercase letters, numbers,
+            symbols on the number keys, and then the remaining
+            keyboard symbols.
+        </p>
+
+
+        <p>
+            When encoding, each character is combined with
+            the value of the character immediately after it.
+            The final character remains unchanged.
+        </p>
+
+
+        <p>
+            If a value goes above the highest active value,
+            it wraps around to the beginning of the alphabet.
+        </p>
+
+
+        <p>
+            Decoding works backwards from the final character.
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+                NKS-94 CHARACTER TABLE
+===================================================== -->
+
+<div class="card">
+
+
+    <h2>
+        NKS-94 Character / Value Table
+    </h2>
+
+
+    <div class="alphabet-controls">
+
+
+        <button
+            id="valueModeButton"
+            class="active"
+        >
+            Show Values
+        </button>
+
+
+        <button
+            id="editModeButton"
+        >
+            Edit Alphabet
+        </button>
+
+
+        <button
+            id="resetAlphabetButton"
+        >
+            Reset Alphabet
+        </button>
+
 
     </div>
 
 
-    <!-- INPUT / OUTPUT -->
-    <div class="card">
+    <div class="alphabet-status">
 
-        <div class="cipher-boxes">
-
-            <!-- INPUT -->
-
-            <div>
-
-                <div class="box-title">
-
-                    <h2>Input</h2>
-
-                    <button id="copyInput">
-                        Copy
-                    </button>
-
-                </div>
-
-                <textarea
-                    id="input"
-                    placeholder="Enter text here..."
-                    spellcheck="false"
-                ></textarea>
-
-                <div class="count">
-                    Characters:
-                    <span id="inputCount">0</span>
-                </div>
-
-            </div>
-
-
-            <!-- OUTPUT -->
-
-            <div>
-
-                <div class="box-title">
-
-                    <h2>Output</h2>
-
-                    <button id="copyOutput">
-                        Copy
-                    </button>
-
-                </div>
-
-                <textarea
-                    id="output"
-                    placeholder="NKS-94 output..."
-                    readonly
-                    spellcheck="false"
-                ></textarea>
-
-                <div class="count">
-                    Characters:
-                    <span id="outputCount">0</span>
-                </div>
-
-            </div>
-
-        </div>
+        Active characters:
+        <strong id="activeCharacterCount">
+            94
+        </strong>
 
     </div>
 
 
-    <!-- EXPLANATION -->
+    <div class="alphabet-info">
 
-    <div class="card">
-
-        <h2>How NKS-94 Works</h2>
-
-        <div class="explanation">
-
-            <p>
-                NKS-94 assigns every supported character a value
-                from <strong>1 to 94</strong>.
-            </p>
-
-            <p>
-                The alphabet is ordered as lowercase letters,
-                uppercase letters, numbers, symbols on the number
-                keys, and then the remaining keyboard symbols.
-            </p>
-
-            <p>
-                When encoding, the value of the next plaintext
-                character is added to the current character's value.
-                If the result goes above 94, it wraps around to 1.
-            </p>
-
-            <p>
-                The final character is unchanged because there is
-                no character after it.
-            </p>
-
-            <p>
-                Decoding works backwards from the final character,
-                subtracting the value of the next plaintext character.
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <!-- ALPHABET -->
-
-    <div class="card">
-
-        <h2>NKS-94 Character / Value Table</h2>
-
-        <div class="alphabet-info">
-
-            <div
-                class="selected-character"
-                id="selectedCharacter"
-            >
-                ?
-            </div>
-
-            <div class="value-display">
-
-                Character:
-                <strong id="selectedCharText">
-                    None
-                </strong>
-
-                <br>
-
-                NKS-94 Value:
-                <strong id="selectedValue">
-                    —
-                </strong>
-
-            </div>
-
-        </div>
 
         <div
-            class="alphabet"
-            id="alphabet"
-        ></div>
+            class="selected-character"
+            id="selectedCharacter"
+        >
+            ?
+        </div>
+
+
+        <div class="value-display">
+
+
+            Character:
+
+            <strong id="selectedCharText">
+                None
+            </strong>
+
+
+            <br>
+
+
+            NKS-94 Value:
+
+            <strong id="selectedValue">
+                —
+            </strong>
+
+
+            <br>
+
+
+            Status:
+
+            <strong id="selectedStatus">
+                —
+            </strong>
+
+
+        </div>
 
     </div>
+
+
+    <div
+        class="alphabet"
+        id="alphabet"
+    ></div>
+
+
+</div>
+
 
 </main>
 
 
 <footer>
+
     NKS-94 Cipher
+
 </footer>
+
 
 
 <script>
 
-/*
-==========================================================
-                    NKS-94 ALPHABET
-==========================================================
 
-VALUES 1–94
+/* =====================================================
+                    ORIGINAL ALPHABET
+=====================================================
 
-1–26    lowercase
-27–52   uppercase
-53–62   numbers
-63–72   number-row shifted symbols
-73–83   remaining unshifted symbols
-84–94   remaining shifted symbols
-==========================================================
-*/
+1–26   lowercase letters
+27–52  uppercase letters
+53–62  numbers
+63–72  number-row symbols
+73–83  unshifted keyboard symbols
+84–94  shifted keyboard symbols
 
-const alphabet =
+TOTAL = 94
+===================================================== */
+
+
+const originalAlphabet =
+
     "abcdefghijklmnopqrstuvwxyz" +
+
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+
     "0123456789" +
+
     "!@#$%^&*()" +
+
     "`-=[]\\;',./" +
+
     "~_+{}|:\"<>?";
 
 
 /*
-==========================================================
-                VERIFY ALPHABET
-==========================================================
+    Make a copy that can be edited.
 */
 
-console.log(
-    "NKS-94 alphabet length:",
-    alphabet.length
-);
+let activeCharacters =
+    [...originalAlphabet];
 
 
 /*
-==========================================================
-                CHARACTER LOOKUP TABLES
-==========================================================
+    Determines whether clicks edit
+    the alphabet or only show values.
 */
 
-const charToValue = new Map();
-const valueToChar = new Map();
-
-for (let i = 0; i < alphabet.length; i++) {
-
-    const character = alphabet[i];
-
-    /*
-        NKS-94 values are 1–94,
-        NOT 0–93.
-    */
-
-    const value = i + 1;
-
-    charToValue.set(character, value);
-    valueToChar.set(value, character);
-}
+let editMode = false;
 
 
-/*
-==========================================================
+/* =====================================================
                     ELEMENTS
-==========================================================
-*/
+===================================================== */
 
 const input =
     document.getElementById("input");
@@ -503,153 +673,500 @@ const copyInput =
 const copyOutput =
     document.getElementById("copyOutput");
 
+
 const alphabetContainer =
     document.getElementById("alphabet");
 
+
+const valueModeButton =
+    document.getElementById("valueModeButton");
+
+const editModeButton =
+    document.getElementById("editModeButton");
+
+const resetAlphabetButton =
+    document.getElementById("resetAlphabetButton");
+
+
+const activeCharacterCount =
+    document.getElementById(
+        "activeCharacterCount"
+    );
+
+
 const selectedCharacter =
-    document.getElementById("selectedCharacter");
+    document.getElementById(
+        "selectedCharacter"
+    );
 
 const selectedCharText =
-    document.getElementById("selectedCharText");
+    document.getElementById(
+        "selectedCharText"
+    );
 
 const selectedValue =
-    document.getElementById("selectedValue");
+    document.getElementById(
+        "selectedValue"
+    );
+
+const selectedStatus =
+    document.getElementById(
+        "selectedStatus"
+    );
+
+
+/* =====================================================
+                    LOOKUP TABLES
+===================================================== */
+
+const charToValue =
+    new Map();
+
+const valueToChar =
+    new Map();
 
 
 /*
-==========================================================
-                BUILD ALPHABET TABLE
-==========================================================
+    Rebuild the values whenever the alphabet changes.
+
+    IMPORTANT:
+    Values are 1–N, never 0–N-1.
 */
 
-for (let i = 0; i < alphabet.length; i++) {
+function rebuildLookupTables() {
 
-    const character = alphabet[i];
+    charToValue.clear();
 
-    const value = i + 1;
-
-    const element =
-        document.createElement("div");
-
-    element.className = "character";
+    valueToChar.clear();
 
 
-    const symbol =
-        document.createElement("div");
+    activeCharacters.forEach(
+        (character, index) => {
 
-    symbol.className =
-        "character-symbol";
-
-
-    /*
-        Display a visual representation
-        for characters that are easy to miss.
-    */
-
-    if (character === " ") {
-        symbol.textContent = "␠";
-    } else {
-        symbol.textContent = character;
-    }
+            const value =
+                index + 1;
 
 
-    const valueElement =
-        document.createElement("div");
-
-    valueElement.className =
-        "character-value";
-
-    valueElement.textContent =
-        value;
+            charToValue.set(
+                character,
+                value
+            );
 
 
-    element.appendChild(symbol);
-    element.appendChild(valueElement);
-
-
-    /*
-        Click a character to display
-        its NKS-94 value.
-    */
-
-    element.addEventListener(
-        "click",
-        () => {
-
-            selectedCharacter.textContent =
-                character;
-
-            selectedCharText.textContent =
-                character;
-
-            selectedValue.textContent =
-                value;
+            valueToChar.set(
+                value,
+                character
+            );
 
         }
     );
 
-
-    alphabetContainer.appendChild(element);
 }
 
 
-/*
-==========================================================
-                    WRAP 1–94
-==========================================================
+/* =====================================================
+                    GET VALUE
+===================================================== */
 
-This converts any integer into an NKS-94 value
-between 1 and 94.
+function getCharacterValue(
+    character
+) {
 
-Examples:
+    return charToValue.get(
+        character
+    );
 
-95  → 1
-96  → 2
-188 → 94
-189 → 1
+}
 
-==========================================================
-*/
+
+/* =====================================================
+                BUILD CHARACTER TABLE
+===================================================== */
+
+function buildAlphabetTable() {
+
+    alphabetContainer.innerHTML = "";
+
+
+    activeCharacterCount.textContent =
+        activeCharacters.length;
+
+
+    /*
+        Always display the original
+        94-character order.
+
+        This means re-adding a character
+        puts it back in its original position.
+    */
+
+    originalAlphabet.split("").forEach(
+        (character) => {
+
+
+            const element =
+                document.createElement(
+                    "div"
+                );
+
+            element.className =
+                "character";
+
+
+            const value =
+                getCharacterValue(
+                    character
+                );
+
+
+            const isActive =
+                value !== undefined;
+
+
+            if (isActive) {
+
+                element.classList.add(
+                    "active-character"
+                );
+
+            } else {
+
+                element.classList.add(
+                    "disabled"
+                );
+
+            }
+
+
+            /*
+                Character symbol
+            */
+
+            const symbol =
+                document.createElement(
+                    "div"
+                );
+
+            symbol.className =
+                "character-symbol";
+
+
+            symbol.textContent =
+                character;
+
+
+            /*
+                Character value
+            */
+
+            const valueElement =
+                document.createElement(
+                    "div"
+                );
+
+            valueElement.className =
+                "character-value";
+
+
+            if (isActive) {
+
+                valueElement.textContent =
+                    value;
+
+            } else {
+
+                valueElement.textContent =
+                    "OFF";
+
+            }
+
+
+            element.appendChild(
+                symbol
+            );
+
+            element.appendChild(
+                valueElement
+            );
+
+
+            /*
+                Character click
+            */
+
+            element.addEventListener(
+                "click",
+                () => {
+
+
+                    /* =================================
+                        SHOW VALUES MODE
+                    ================================= */
+
+                    if (!editMode) {
+
+
+                        const currentValue =
+                            getCharacterValue(
+                                character
+                            );
+
+
+                        selectedCharacter.textContent =
+                            character;
+
+
+                        selectedCharText.textContent =
+                            character;
+
+
+                        selectedValue.textContent =
+                            currentValue !== undefined
+                                ? currentValue
+                                : "—";
+
+
+                        selectedStatus.textContent =
+                            currentValue !== undefined
+                                ? "Active"
+                                : "Removed";
+
+
+                        return;
+
+                    }
+
+
+                    /* =================================
+                        EDIT ALPHABET MODE
+                    ================================= */
+
+                    const index =
+                        activeCharacters.indexOf(
+                            character
+                        );
+
+
+                    /*
+                        Character is currently OFF.
+                    */
+
+                    if (index === -1) {
+
+
+                        /*
+                            Find where it belongs
+                            in the original alphabet.
+                        */
+
+                        const originalIndex =
+                            originalAlphabet.indexOf(
+                                character
+                            );
+
+
+                        /*
+                            Insert it according
+                            to the original ordering.
+                        */
+
+                        let insertIndex =
+                            activeCharacters.length;
+
+
+                        for (
+                            let i = 0;
+                            i < activeCharacters.length;
+                            i++
+                        ) {
+
+                            const existingIndex =
+                                originalAlphabet.indexOf(
+                                    activeCharacters[i]
+                                );
+
+
+                            if (
+                                existingIndex >
+                                originalIndex
+                            ) {
+
+                                insertIndex = i;
+
+                                break;
+
+                            }
+
+                        }
+
+
+                        activeCharacters.splice(
+                            insertIndex,
+                            0,
+                            character
+                        );
+
+
+                    } else {
+
+
+                        /*
+                            Character is currently ON,
+                            so remove it.
+                        */
+
+                        activeCharacters.splice(
+                            index,
+                            1
+                        );
+
+                    }
+
+
+                    /*
+                        Rebuild values.
+                    */
+
+                    rebuildLookupTables();
+
+
+                    /*
+                        Rebuild visual table.
+                    */
+
+                    buildAlphabetTable();
+
+
+                    /*
+                        Recalculate cipher.
+                    */
+
+                    update();
+
+
+                    /*
+                        Update selected information.
+                    */
+
+                    const newValue =
+                        getCharacterValue(
+                            character
+                        );
+
+
+                    selectedCharacter.textContent =
+                        character;
+
+
+                    selectedCharText.textContent =
+                        character;
+
+
+                    selectedValue.textContent =
+                        newValue !== undefined
+                            ? newValue
+                            : "—";
+
+
+                    selectedStatus.textContent =
+                        newValue !== undefined
+                            ? "Active"
+                            : "Removed";
+
+                }
+            );
+
+
+            alphabetContainer.appendChild(
+                element
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+                    WRAP VALUES
+=====================================================
+
+For a 94-character alphabet:
+
+94 + 1 = 1
+94 + 2 = 2
+
+If characters are removed:
+
+89 + 1 = 1
+
+etc.
+
+This keeps the values 1–N.
+===================================================== */
 
 function wrap(value) {
 
+    const size =
+        activeCharacters.length;
+
+
+    if (size === 0) {
+
+        return null;
+
+    }
+
+
     return (
-        ((value - 1) % 94 + 94) % 94
+        ((value - 1) % size + size) % size
     ) + 1;
 
 }
 
 
-/*
-==========================================================
-                    ENCODE
-==========================================================
-*/
+/* =====================================================
+                        ENCODE
+===================================================== */
 
 function encode(text) {
 
-    if (text.length === 0) {
+    if (
+        text.length === 0 ||
+        activeCharacters.length === 0
+    ) {
+
         return "";
+
     }
+
 
     let result = "";
 
 
-    for (let i = 0; i < text.length; i++) {
+    for (
+        let i = 0;
+        i < text.length;
+        i++
+    ) {
+
 
         const current =
             text[i];
 
 
         /*
-            The final character is unchanged.
+            Last character stays unchanged.
         */
 
-        if (i === text.length - 1) {
+        if (
+            i === text.length - 1
+        ) {
 
             result += current;
 
             continue;
+
         }
 
 
@@ -658,14 +1175,19 @@ function encode(text) {
 
 
         const currentValue =
-            charToValue.get(current);
+            charToValue.get(
+                current
+            );
 
         const nextValue =
-            charToValue.get(next);
+            charToValue.get(
+                next
+            );
 
 
         /*
-            Unsupported characters are preserved.
+            Unsupported characters
+            remain unchanged.
         */
 
         if (
@@ -676,60 +1198,67 @@ function encode(text) {
             result += current;
 
             continue;
+
         }
 
 
         /*
-            NKS-94 uses 1–94.
-
-            Example:
-
-            current = 90
-            next    = 10
-
-            90 + 10 = 100
-
-            100 wraps to 6.
+            Add current and next values.
         */
 
         const newValue =
-            wrap(currentValue + nextValue);
+            wrap(
+                currentValue +
+                nextValue
+            );
 
 
         result +=
-            valueToChar.get(newValue);
+            valueToChar.get(
+                newValue
+            );
 
     }
 
 
     return result;
+
 }
 
 
-/*
-==========================================================
-                    DECODE
-==========================================================
-*/
+/* =====================================================
+                        DECODE
+===================================================== */
 
 function decode(text) {
 
-    if (text.length === 0) {
+    if (
+        text.length === 0 ||
+        activeCharacters.length === 0
+    ) {
+
         return "";
+
     }
 
 
     const result =
-        new Array(text.length);
+        new Array(
+            text.length
+        );
 
 
     /*
-        The final character was unchanged
+        Last character was unchanged
         during encoding.
     */
 
-    result[text.length - 1] =
-        text[text.length - 1];
+    result[
+        text.length - 1
+    ] =
+        text[
+            text.length - 1
+        ];
 
 
     /*
@@ -742,18 +1271,25 @@ function decode(text) {
         i--
     ) {
 
+
         const cipherChar =
             text[i];
+
 
         const nextPlainChar =
             result[i + 1];
 
 
         const cipherValue =
-            charToValue.get(cipherChar);
+            charToValue.get(
+                cipherChar
+            );
+
 
         const nextValue =
-            charToValue.get(nextPlainChar);
+            charToValue.get(
+                nextPlainChar
+            );
 
 
         /*
@@ -770,48 +1306,45 @@ function decode(text) {
                 cipherChar;
 
             continue;
+
         }
 
 
         /*
-            Reverse the encoding:
+            Reverse:
+
+            cipher =
+                plaintext + next
+
+            therefore:
 
             plaintext =
-                cipher - next plaintext
-
-            Example:
-
-            cipher = 6
-            next   = 10
-
-            6 - 10 = -4
-
-            Wrap around:
-
-            -4 → 90
+                cipher - next
         */
 
         const plainValue =
             wrap(
-                cipherValue - nextValue
+                cipherValue -
+                nextValue
             );
 
 
         result[i] =
-            valueToChar.get(plainValue);
+            valueToChar.get(
+                plainValue
+            );
 
     }
 
 
     return result.join("");
+
 }
 
 
-/*
-==========================================================
-                    UPDATE
-==========================================================
-*/
+/* =====================================================
+                    UPDATE OUTPUT
+===================================================== */
 
 function update() {
 
@@ -823,7 +1356,9 @@ function update() {
         text.length;
 
 
-    if (mode.value === "encode") {
+    if (
+        mode.value === "encode"
+    ) {
 
         output.value =
             encode(text);
@@ -838,19 +1373,19 @@ function update() {
 
     outputCount.textContent =
         output.value.length;
+
 }
 
 
-/*
-==========================================================
+/* =====================================================
                     INPUT EVENTS
-==========================================================
-*/
+===================================================== */
 
 input.addEventListener(
     "input",
     update
 );
+
 
 mode.addEventListener(
     "change",
@@ -858,21 +1393,23 @@ mode.addEventListener(
 );
 
 
-/*
-==========================================================
-                    CLEAR
-==========================================================
-*/
+/* =====================================================
+                    CLEAR BUTTON
+===================================================== */
 
 clearButton.addEventListener(
     "click",
     () => {
 
         input.value = "";
+
         output.value = "";
 
-        inputCount.textContent = "0";
-        outputCount.textContent = "0";
+        inputCount.textContent =
+            "0";
+
+        outputCount.textContent =
+            "0";
 
         input.focus();
 
@@ -880,26 +1417,30 @@ clearButton.addEventListener(
 );
 
 
-/*
-==========================================================
+/* =====================================================
                     COPY INPUT
-==========================================================
-*/
+===================================================== */
 
 copyInput.addEventListener(
     "click",
     async () => {
 
         await navigator.clipboard
-            .writeText(input.value);
+            .writeText(
+                input.value
+            );
+
 
         copyInput.textContent =
             "Copied!";
 
+
         setTimeout(
             () => {
+
                 copyInput.textContent =
                     "Copy";
+
             },
             1000
         );
@@ -908,26 +1449,30 @@ copyInput.addEventListener(
 );
 
 
-/*
-==========================================================
+/* =====================================================
                     COPY OUTPUT
-==========================================================
-*/
+===================================================== */
 
 copyOutput.addEventListener(
     "click",
     async () => {
 
         await navigator.clipboard
-            .writeText(output.value);
+            .writeText(
+                output.value
+            );
+
 
         copyOutput.textContent =
             "Copied!";
 
+
         setTimeout(
             () => {
+
                 copyOutput.textContent =
                     "Copy";
+
             },
             1000
         );
@@ -936,13 +1481,105 @@ copyOutput.addEventListener(
 );
 
 
-/*
-==========================================================
+/* =====================================================
+                    SHOW VALUES MODE
+===================================================== */
+
+valueModeButton.addEventListener(
+    "click",
+    () => {
+
+        editMode = false;
+
+
+        valueModeButton.classList.add(
+            "active"
+        );
+
+
+        editModeButton.classList.remove(
+            "active"
+        );
+
+    }
+);
+
+
+/* =====================================================
+                    EDIT ALPHABET MODE
+===================================================== */
+
+editModeButton.addEventListener(
+    "click",
+    () => {
+
+        editMode = true;
+
+
+        editModeButton.classList.add(
+            "active"
+        );
+
+
+        valueModeButton.classList.remove(
+            "active"
+        );
+
+    }
+);
+
+
+/* =====================================================
+                    RESET ALPHABET
+===================================================== */
+
+resetAlphabetButton.addEventListener(
+    "click",
+    () => {
+
+
+        activeCharacters =
+            [...originalAlphabet];
+
+
+        rebuildLookupTables();
+
+
+        buildAlphabetTable();
+
+
+        update();
+
+
+        selectedCharacter.textContent =
+            "?";
+
+
+        selectedCharText.textContent =
+            "None";
+
+
+        selectedValue.textContent =
+            "—";
+
+
+        selectedStatus.textContent =
+            "—";
+
+    }
+);
+
+
+/* =====================================================
                     INITIALISE
-==========================================================
-*/
+===================================================== */
+
+rebuildLookupTables();
+
+buildAlphabetTable();
 
 update();
+
 
 </script>
 
